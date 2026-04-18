@@ -1,0 +1,14 @@
+> projex deploy --help
+
+                                                                                
+ Usage: example_rich_click.py deploy [OPTIONS] COMMAND [ARGS]...                
+                                                                                
+ Deployment commands.                                                           
+                                                                                
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --help  Show this message and exit.                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─ Commands ───────────────────────────────────────────────────────────────────╮
+│ rollback          Roll back to a previous version.                           │
+│ run               Run a deployment.                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯

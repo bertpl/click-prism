@@ -1,0 +1,6 @@
+> projex tree
+
+projex
+├── config      Manage configuration settings
+├── broken      (error: No module named 'heavylib')
+╰── status      Show current project status

@@ -1,0 +1,16 @@
+> projex --help
+
+Usage: example_cloup.py [OPTIONS] COMMAND [ARGS]...
+
+  Projex — a project management tool.
+
+Options:
+  --version  Show the version and exit.
+  --help     Show this message and exit.
+
+Infrastructure:
+  config  Manage configuration settings.
+  deploy  Deployment commands.
+
+Info:
+  status  Show current project status.

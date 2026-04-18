@@ -1,0 +1,21 @@
+> projex --help
+
+Usage: projex [OPTIONS] COMMAND [ARGS]...
+
+  Projex — a project management tool.
+
+Options:
+  --version    Show the version and exit.
+  --help-json  Output CLI structure as JSON and exit.
+  --help       Show this message and exit.
+
+Commands:
+  projex
+  ├── config        Manage configuration settings
+  │   ├── get        Get a configuration value
+  │   ├── set        Set a configuration value
+  │   ╰── list       List all configuration values
+  ├── deploy        Deployment commands
+  │   ├── run        Run a deployment
+  │   ╰── rollback   Roll back to a previous version
+  ╰── status        Show current project status

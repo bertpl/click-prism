@@ -1,0 +1,24 @@
+[project]
+name = "example-cli"
+version = "0.0.0"
+description = "Example CLI for click-prism plan documentation"
+requires-python = ">=3.10"
+dependencies = ["click>=8.0"]
+
+[project.optional-dependencies]
+rich = ["rich>=13.0"]
+click-command-tree = ["click-command-tree", "click-plugins"]
+rich-click = ["rich-click"]
+cloup = ["cloup"]
+click-extra = ["click-extra"]
+click-help-colors = ["click-help-colors"]
+click-didyoumean = ["click-didyoumean"]
+click-default-group = ["click-default-group"]
+click-aliases = ["click-aliases"]
+all = [
+    "example-cli[rich,click-command-tree,rich-click,cloup,click-extra,click-help-colors,click-didyoumean,click-default-group,click-aliases]",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

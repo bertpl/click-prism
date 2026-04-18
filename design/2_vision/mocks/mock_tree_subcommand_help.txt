@@ -1,0 +1,9 @@
+> projex tree --help
+
+Usage: projex tree [OPTIONS]
+
+  Display the command tree.
+
+Options:
+  --depth INTEGER  Limit tree depth.
+  --help           Show this message and exit.

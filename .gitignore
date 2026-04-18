@@ -1,0 +1,41 @@
+# IDE / editor
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Claude
+.claude/
+CLAUDE.md
+
+# Local / scratch
+.local/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+*.egg
+dist/
+build/
+*.whl
+.eggs/
+
+# Virtual environments / lock files
+.venv/
+venv/
+env/
+uv.lock
+
+# Testing / coverage
+.tox/
+.nox/
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+
+# OS
+.DS_Store
+Thumbs.db

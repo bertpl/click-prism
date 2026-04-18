@@ -1,0 +1,12 @@
+> projex tree
+
+cli - Projex — a project management tool.
+├── config - Manage configuration settings.
+│   ├── get - Get a configuration value.
+│   ├── list - List all configuration values.
+│   └── set - Set a configuration value.
+├── deploy - Deployment commands.
+│   ├── rollback - Roll back to a previous version.
+│   └── run - Run a deployment.
+├── status - Show current project status.
+└── tree - show the command tree of your CLI

@@ -1,0 +1,7 @@
+> projex tree
+
+projex
+├── config    Manage configuration settings
+│   ╰── get    Get a configuration value
+╰── deploy    Deployment commands
+    ╰── run    Run a deployment

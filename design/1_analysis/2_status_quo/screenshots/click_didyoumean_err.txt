@@ -1,0 +1,9 @@
+> projex stat
+
+Usage: example_click_didyoumean.py [OPTIONS] COMMAND [ARGS]...
+Try 'example_click_didyoumean.py --help' for help.
+
+Error: No such command 'stat'.
+
+Did you mean one of these?
+    status

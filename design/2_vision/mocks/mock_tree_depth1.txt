@@ -1,0 +1,7 @@
+> projex tree --depth 1
+
+projex
+├── config      Manage configuration settings
+├── deploy      Deployment commands
+├── status      Show current project status
+╰── tree        Display the command tree

@@ -1,0 +1,48 @@
+> projex --help-json
+
+{
+  "name": "projex",
+  "type": "group",
+  "help": "Projex \u2014 a project management tool.",
+  "hidden": false,
+  "deprecated": false,
+  "options": [
+    {
+      "name": "version",
+      "declarations": [
+        "--version"
+      ],
+      "is_flag": true,
+      "help": "Show the version and exit."
+    }
+  ],
+  "children": [
+    {
+      "name": "config",
+      "type": "group",
+      "help": "Manage configuration settings.",
+      "hidden": false,
+      "deprecated": false,
+      "arguments": [],
+      "options": [],
+      "children": [
+        {
+          "name": "get",
+          "type": "command",
+          "help": "Get a configuration value.",
+          "hidden": false,
+          "deprecated": false,
+          "arguments": [
+            {
+              "name": "key",
+              "type": "TEXT",
+              "required": true
+            }
+          ],
+          "options": []
+        }
+      ]
+    }
+    ...
+  ]
+}

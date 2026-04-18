@@ -1,0 +1,14 @@
+> projex --help
+
+Usage: example_click_help_colors.py [OPTIONS] COMMAND [ARGS]...
+
+  Projex — a project management tool.
+
+Options:
+  --version  Show the version and exit.
+  --help     Show this message and exit.
+
+Commands:
+  config  Manage configuration settings.
+  deploy  Deployment commands.
+  status  Show current project status.

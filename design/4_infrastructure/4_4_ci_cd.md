@@ -151,6 +151,15 @@ jobs:
       - uses: codecov/codecov-action@v5
         with:
           files: ./reports/coverage.xml
+          token: ${{ secrets.CODECOV_TOKEN }}   # Codecov no longer
+                                                # accepts tokenless
+                                                # uploads for non-fork
+                                                # repos. CODECOV_TOKEN
+                                                # is a per-repo upload
+                                                # token (read on
+                                                # codecov.io repo page,
+                                                # stored as a GitHub
+                                                # repo secret).
 ```
 
 Full test matrix + merged coverage upload to Codecov. The

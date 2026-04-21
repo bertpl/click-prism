@@ -13,6 +13,11 @@ target-version = "py310"   # Minimum supported Python syntax. Matches
                            # requires-python in pyproject.toml and
                            # .python-version — see section 4.1 for the
                            # "local = minimum supported" rationale.
+src = ["click_prism", "tests"]  # Whitelist: Makefile and pre-commit
+                                # hooks target these directories
+                                # explicitly. Anything else (notably
+                                # design/_examples mock scripts) is
+                                # outside the linted scope.
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
@@ -57,6 +62,11 @@ commit loop must feel instant.
 
 ```yaml
 # .pre-commit-config.yaml
+exclude: ^design/   # Design docs and example scripts are outside
+                   # the linted scope (whitelist enforced per-hook
+                   # below for ruff; this top-level exclude covers
+                   # the remote pre-commit-hooks bundle).
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
@@ -73,12 +83,14 @@ repos:
         entry: uv run ruff format
         language: system
         types: [python]
+        files: ^(click_prism|tests)/
         pass_filenames: true
       - id: ruff
         name: ruff check
         entry: uv run ruff check
         language: system
         types: [python]
+        files: ^(click_prism|tests)/
         pass_filenames: true
 ```
 

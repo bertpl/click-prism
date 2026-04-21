@@ -16,8 +16,14 @@ main                              ← development trunk
 Flow:
 
 1. Development happens on feature branches, merged to `main` via
-   PR. Version in `pyproject.toml` on main stays at the last
-   released version between releases.
+   PR. **Squash-merge is the only allowed merge method** — repo
+   settings disable merge commits and rebase merges, so each PR
+   produces exactly one commit on `main`. The squash commit
+   subject is the PR title (which follows the `<prefix>: …`
+   convention from section 4.2.5); the body is the PR body. The
+   feature branch is auto-deleted on merge. Version in
+   `pyproject.toml` on main stays at the last released version
+   between releases.
 2. A maintainer decides to release and runs
    `make release VERSION=X.Y.Z` — a single developer command that
    drives the 18-step process documented in section 4.4.4 (8 validation
@@ -98,7 +104,7 @@ jobs:
       - name: Check branch name
         run: |
           BRANCH="${{ github.head_ref }}"
-          if [[ ! "$BRANCH" =~ ^(feature|fix|docs|chore)/[a-z0-9-]+$ ]]; then
+          if [[ ! "$BRANCH" =~ ^(feat|fix|chore|docs|refactor|test)/[a-z0-9-]+$ ]]; then
             echo "::error::Branch name '$BRANCH' does not match pattern"
             exit 1
           fi

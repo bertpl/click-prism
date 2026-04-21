@@ -1,41 +1,37 @@
-# IDE / editor
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# Claude
-.claude/
-CLAUDE.md
-
-# Local / scratch
-.local/
-
 # Python
 __pycache__/
-*.py[cod]
-*.pyo
 *.egg-info/
-*.egg
 dist/
-build/
-*.whl
-.eggs/
-
-# Virtual environments / lock files
-.venv/
-venv/
-env/
-uv.lock
-
-# Testing / coverage
-.tox/
-.nox/
 .pytest_cache/
-.coverage
+.ruff_cache/
+
+# Coverage
 htmlcov/
-.mypy_cache/
+.coverage
+reports/
+
+# Virtual environments
+.venv/
+
+# Private dev docs
+.local/
+
+# IDE
+.idea/
+.vscode/
 
 # OS
 .DS_Store
+._*
 Thumbs.db
+Desktop.ini
+
+# AI assistants
+.claude/
+CLAUDE.md
+AGENTS.md
+.cursor/
+.cursorrules
+.aider*
+.copilot/
+.github/copilot-instructions.md

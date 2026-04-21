@@ -127,35 +127,41 @@ uncontentious.
 
 ## 4.2.4. Branch naming
 
-Format: `<type>/<description>`
-
-The description often starts with an issue number when applicable:
+Format: `<prefix>/<NN>-<short-slug>`
 
 ```
-feature/12-tree-mixin
+chore/01-package-scaffolding
+feat/12-tree-mixin
 fix/34-rich-fallback
-docs/update-readme
-chore/ci-matrix
+docs/05-update-readme
+refactor/18-extract-renderer
+test/22-snapshot-fixtures
 ```
 
 | Prefix | Use |
 |---|---|
-| `feature/` | New functionality |
+| `feat/` | New functionality |
 | `fix/` | Bug fixes |
-| `docs/` | Documentation only |
 | `chore/` | Maintenance, CI, tooling |
+| `docs/` | Documentation only |
+| `refactor/` | Code restructuring without behavior change |
+| `test/` | Test additions or changes |
 
 Rules:
 
+- Short-form prefixes, aligned with Conventional Commits naming
+  (without adopting the rest of the spec).
 - All lowercase.
 - Hyphens as word separators (not underscores). Matches GitHub's
   auto-generated branch names.
-- Issue number after the prefix slash when applicable.
+- **`NN`** — two-digit zero-padded sequence number, continuous
+  across all branches in the project. When a GitHub issue exists,
+  its number replaces the sequence (`feat/42-…`).
 - Keep under 50 characters.
 
 Enforced via a CI check in `pull_request_to_main.yml` (section 4.4.2) that
 validates the source branch name against the pattern
-`^(feature|fix|docs|chore)/[a-z0-9-]+$`.
+`^(feat|fix|chore|docs|refactor|test)/[a-z0-9-]+$`.
 
 References:
 
@@ -170,17 +176,31 @@ package enforces commit message structure.
 
 ### 4.2.5.1. Recommended style
 
-Descriptive messages that explain the *why*, not just the *what*.
-Include issue references where applicable:
+Subject line uses the same short-form prefix as the branch
+(section 4.2.4):
 
 ```
-Add TreeTheme dataclass for Rich styling
+<prefix>: <imperative summary>
+```
+
+- **Prefix** — `feat`, `fix`, `chore`, `docs`, `refactor`, `test`.
+  Matching the branch prefix is the common case but not required
+  (e.g. a `chore/…` branch may contain a mix of `chore:` and
+  `docs:` commits).
+- **Summary** — imperative mood, lowercase, no trailing period,
+  ideally under 72 characters.
+
+Body (optional) explains the *why*, not just the *what*. Wrap at
+~72 characters. Include issue references where applicable:
+
+```
+feat: add TreeTheme dataclass for Rich styling
 
 Refs #15
 ```
 
 ```
-Fix empty group crash in tree_help mode
+fix: handle empty group crash in tree_help mode
 
 The renderer assumed at least one child command existed.
 Fixes #22
@@ -190,3 +210,8 @@ Issue references in the message body or footer (`Refs #15`,
 `Fixes #22`) are picked up by GitHub for auto-linking and
 auto-closing. These also make it easy to trace changes when
 writing release notes.
+
+This adopts the *prefix* from Conventional Commits without
+adopting the rest of the spec (no scopes, no `BREAKING CHANGE`
+footer, no machine parsing). The prefix gives commit-log
+scannability and consistency with branch names.

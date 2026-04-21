@@ -74,6 +74,7 @@ dev = [
     "ruff>=0.14",
     "syrupy>=4.0",
     "genbadge[coverage]>=1.1",
+    "pre-commit>=4.0",
 ]
 docs = [
     "mkdocs>=1.6",

@@ -35,6 +35,8 @@ dev = [
     "ruff>=0.14",
     "syrupy>=4.0",
     "genbadge[coverage]>=1.1",
+    "pre-commit>=4.0",
+    "tomli>=2.0; python_version < '3.11'",
 ]
 docs = [
     "mkdocs>=1.6",
@@ -57,3 +59,21 @@ packages = ["click_prism"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["click_prism"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+src = ["click_prism", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["click_prism"]
+
+[tool.coverage.report]
+precision = 2
+fail_under = 100

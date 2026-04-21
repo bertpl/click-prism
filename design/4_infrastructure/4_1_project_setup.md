@@ -199,7 +199,9 @@ performance gains). For a small library these don't matter much
 day-to-day.
 
 **`.python-versions`** (plural) — source of truth for the CI test
-matrix. Read by the `python_versions` composite action (section 4.4.3).
+matrix. Read by humans maintaining the matrix in
+`_unit_tests.yml` (section 4.4.2) and validated against
+`pyproject.toml` classifiers by `scripts/release.py` (section 4.4.4).
 
 ```
 3.10

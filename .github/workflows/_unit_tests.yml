@@ -1,0 +1,88 @@
+name: Unit tests (full matrix)
+
+on:
+  workflow_call:
+
+jobs:
+  # Tier 1 — Core matrix: Python × Click boundaries.
+  # 5 Python × 2 Click + 4 includes = 14 jobs.
+  core:
+    name: core (py${{ matrix.python }}, click${{ matrix.click }}, ${{ matrix.resolution }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+        click: ["8.0", "8.3"]
+        resolution: ["highest"]
+        include:
+          - python: "3.10"
+            click: "8.0"
+            resolution: "lowest-direct"
+          - python: "3.14"
+            click: "8.3"
+            resolution: "lowest-direct"
+          - python: "3.14"
+            click: "8.1"
+            resolution: "highest"
+          - python: "3.14"
+            click: "8.2"
+            resolution: "highest"
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/unit_test
+        with:
+          python-version: ${{ matrix.python }}
+          click-version: ${{ matrix.click }}
+          resolution: ${{ matrix.resolution }}
+
+  # Tier 2 — Rich variations.
+  # The "no rich" case overlaps with tier 1's (3.14, 8.3, highest) so we
+  # only list the 3 net-new combinations here.
+  rich:
+    name: rich (py${{ matrix.python }}, click${{ matrix.click }}, rich=${{ matrix.rich }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - python: "3.14"
+            click: "8.3"
+            rich: "13.0"
+          - python: "3.14"
+            click: "8.3"
+            rich: "latest"
+          - python: "3.10"
+            click: "8.0"
+            rich: "latest"
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/unit_test
+        with:
+          python-version: ${{ matrix.python }}
+          click-version: ${{ matrix.click }}
+          rich-version: ${{ matrix.rich }}
+
+  # Tier 3 — Ecosystem compatibility.
+  # 4 packages active from phase 2 (when PrismGroup ships); the remaining
+  # 3 (click-help-colors, click-default-group, click-aliases) are added
+  # in phase 9 alongside PrismGroup.wrapping().
+  compat:
+    name: compat (${{ matrix.package }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - "rich-click"
+          - "cloup"
+          - "click-extra"
+          - "click-didyoumean"
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/unit_test
+        with:
+          python-version: "3.14"
+          click-version: "8.3"
+          rich-version: "latest"
+          extra-package: ${{ matrix.package }}

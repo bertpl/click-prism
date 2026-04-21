@@ -1,0 +1,31 @@
+name: Pull Request to Main
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize]
+
+jobs:
+  validate-branch-name:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branch name
+        run: |
+          BRANCH="${{ github.head_ref }}"
+          if [[ ! "$BRANCH" =~ ^(feat|fix|chore|docs|refactor|test)/[a-z0-9-]+$ ]]; then
+            echo "::error::Branch name '$BRANCH' does not match pattern ^(feat|fix|chore|docs|refactor|test)/[a-z0-9-]+\$"
+            exit 1
+          fi
+
+  lint:
+    needs: [validate-branch-name]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v7
+      - run: uv sync --group dev
+      - run: uv run ruff check click_prism tests
+
+  test:
+    needs: [validate-branch-name]
+    uses: ./.github/workflows/_unit_tests.yml

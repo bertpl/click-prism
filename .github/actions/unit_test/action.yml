@@ -1,0 +1,107 @@
+name: Unit test
+description: |
+  Resolve dependencies as a single globally-consistent set (per matrix
+  cell) using `uv pip compile`, then install and run pytest. Matrix
+  inputs become overrides honored at resolution time, so installed
+  versions always match the cell's intent.
+
+inputs:
+  python-version:
+    description: Python version. Empty string uses .python-version.
+    required: false
+    default: ""
+  click-version:
+    description: Click version pin (e.g. "8.0"). Empty = no override.
+    required: false
+    default: ""
+  rich-version:
+    description: |
+      Rich version. Empty = rich extra not installed. "latest" = install
+      the rich extra without a pin (resolution picks latest). Otherwise
+      pin to that version (e.g. "13.0").
+    required: false
+    default: ""
+  extra-package:
+    description: |
+      Additional package to install into the resolved set
+      (e.g. "rich-click", "cloup"). Empty = none.
+    required: false
+    default: ""
+  resolution:
+    description: uv resolution strategy. "highest" (default) or "lowest-direct".
+    required: false
+    default: "highest"
+
+runs:
+  using: composite
+  steps:
+    - name: Set up uv
+      uses: astral-sh/setup-uv@v7
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Build overrides + extras input files
+      shell: bash
+      env:
+        CLICK_VERSION: ${{ inputs.click-version }}
+        RICH_VERSION: ${{ inputs.rich-version }}
+        EXTRA_PACKAGE: ${{ inputs.extra-package }}
+      run: |
+        : > /tmp/overrides.txt
+        [ -n "$CLICK_VERSION" ] && echo "click==$CLICK_VERSION" >> /tmp/overrides.txt
+        if [ -n "$RICH_VERSION" ] && [ "$RICH_VERSION" != "latest" ]; then
+          echo "rich==$RICH_VERSION" >> /tmp/overrides.txt
+        fi
+
+        : > /tmp/extras.in
+        [ -n "$EXTRA_PACKAGE" ] && echo "$EXTRA_PACKAGE" >> /tmp/extras.in
+
+        echo '--- overrides.txt ---'
+        cat /tmp/overrides.txt
+        echo '--- extras.in ---'
+        cat /tmp/extras.in
+
+    - name: Compile globally consistent requirements
+      shell: bash
+      env:
+        PYTHON_VERSION: ${{ inputs.python-version }}
+        RICH_VERSION: ${{ inputs.rich-version }}
+        RESOLUTION: ${{ inputs.resolution }}
+      run: |
+        # --python-version must be explicit; without it `uv pip compile`
+        # drops transitive deps that are gated on Python version markers
+        # (e.g. exceptiongroup on Python < 3.11) when --override is used.
+        PY_VER="$PYTHON_VERSION"
+        [ -z "$PY_VER" ] && PY_VER=$(cat .python-version)
+
+        EXTRA_RICH=""
+        [ -n "$RICH_VERSION" ] && EXTRA_RICH="--extra rich"
+
+        EXTRAS_INPUT=""
+        [ -s /tmp/extras.in ] && EXTRAS_INPUT="/tmp/extras.in"
+
+        uv pip compile pyproject.toml $EXTRAS_INPUT \
+          --group dev \
+          $EXTRA_RICH \
+          --override /tmp/overrides.txt \
+          --resolution "$RESOLUTION" \
+          --python-version "$PY_VER" \
+          -o /tmp/requirements.txt
+
+        echo '--- requirements.txt (head) ---'
+        head -40 /tmp/requirements.txt
+
+    - name: Install resolved set
+      shell: bash
+      env:
+        PYTHON_VERSION: ${{ inputs.python-version }}
+      run: |
+        PY_VER="$PYTHON_VERSION"
+        [ -z "$PY_VER" ] && PY_VER=$(cat .python-version)
+        uv venv --python "$PY_VER"
+        uv pip sync /tmp/requirements.txt
+        uv pip install -e . --no-deps
+
+    - name: Run tests
+      shell: bash
+      run: .venv/bin/pytest tests --durations=20

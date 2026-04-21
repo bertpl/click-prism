@@ -156,30 +156,67 @@ separate concern — see section 4.3.5.
 
 ## 4.3.4. Dependency installation for matrix jobs
 
-Matrix jobs start from `uv.lock` (section 4.1) then override specific
-packages to test a particular version combination. The lock
-provides the baseline; the overrides target the dimension being
-tested.
+Each matrix cell installs a **single globally-consistent dependency
+set** resolved from scratch — `uv.lock` is intentionally **not**
+used. The cell's matrix coordinates (Click version, Rich version,
+extra package, resolution strategy) are fed into `uv pip compile` as
+overrides, so the resolver picks every transitive version under the
+chosen strategy with the cell's pins honored.
 
 ```bash
-# 1. Start from lock (fast, deterministic)
-uv sync --group dev
+# 1. Express the cell's pins as resolver overrides.
+cat > /tmp/overrides.txt <<EOF
+click==$CLICK_VERSION
+rich==$RICH_VERSION   # only if pinned (omit for "latest" or "absent")
+EOF
 
-# 2. Override the dimension under test
-uv pip install "click==$CLICK_VERSION"    # Tier 1: specific Click
-uv pip install "rich==$RICH_VERSION"      # Tier 2: specific Rich (or skip for "none")
-uv pip install "$PACKAGE"                 # Tier 3: neighbor package
+# 2. Optional: extra non-dependency package for the cell (Tier 3).
+echo "$EXTRA_PACKAGE" > /tmp/extras.in   # only if set
+
+# 3. Compile a globally-consistent requirements.txt.
+uv pip compile pyproject.toml /tmp/extras.in \
+  --group dev \
+  --extra rich                  \   # only if rich is in scope
+  --override /tmp/overrides.txt \
+  --resolution "$RESOLUTION"    \   # highest | lowest-direct
+  --python-version "$PY_VERSION" \
+  -o /tmp/requirements.txt
+
+# 4. Install exactly that set into a fresh venv.
+uv venv --python "$PY_VERSION"
+uv pip sync /tmp/requirements.txt
+uv pip install -e . --no-deps
+
+# 5. Run the tests.
+.venv/bin/pytest tests --durations=20
 ```
 
-For `lowest-direct` resolution jobs, the override re-resolves
-transitive dependencies to their lowest compatible versions:
+**Why not start from `uv.lock`.** The previous approach (sync from
+the lock, then layer `uv pip install <pin>` on top) produced
+inconsistent state when overrides interacted with `--resolution
+lowest-direct`: a cell labeled `(click=8.3, lowest-direct)` would
+silently end up with Click 8.0 because the final
+`uv pip install --resolution lowest-direct .` re-resolved against
+`pyproject.toml`'s `click>=8.0` floor, overriding the earlier
+explicit pin. Compiling the full set in one resolve eliminates that
+class of bug — the requirements.txt is the single source of truth
+for the cell, and the matrix label always matches the installed
+versions.
 
-```bash
-uv pip install --resolution lowest-direct .
-```
+**Notes:**
 
-This catches issues where `click-prism` accidentally depends on a
-feature introduced in a newer version of a transitive dependency.
+- `--python-version` must be passed explicitly to `uv pip compile`.
+  Without it, transitive deps gated on Python-version markers (e.g.
+  `exceptiongroup` for Python < 3.11) are dropped from the resolution
+  when `--override` is used, causing pytest to fail to import.
+- For Tier 3 the extra package is added as a separate input to the
+  same `uv pip compile` call — that way it becomes part of the
+  globally-resolved set rather than a layered `uv pip install`
+  afterward.
+- `lowest-direct` only affects the project's direct dependencies
+  (those declared in `pyproject.toml`). Dev-group dependencies
+  (`pytest`, `ruff`, etc.) are always resolved at "highest" since
+  their pins exist for tooling, not user-facing version compatibility.
 
 ## 4.3.5. Coverage strategy
 

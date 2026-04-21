@@ -83,9 +83,8 @@ All workflows from section 4.4.2 must exist and be tested:
 - `release_tag.yml`
 - `_unit_tests.yml` (reusable)
 
-All three composite actions from section 4.4.3:
+Both composite actions from section 4.4.3:
 
-- `python_versions`
 - `unit_test`
 - `validate_version_trigger`
 

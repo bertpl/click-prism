@@ -144,7 +144,10 @@ jobs:
       - uses: actions/checkout@v5
       - uses: astral-sh/setup-uv@v7
       - run: make coverage
-      - run: uv run coverage xml -o ./reports/coverage.xml
+      - name: Export coverage to XML
+        env:
+          COVERAGE_FILE: ./reports/.coverage   # match `make coverage`
+        run: uv run coverage xml -o ./reports/coverage.xml
       - uses: codecov/codecov-action@v5
         with:
           files: ./reports/coverage.xml
@@ -218,11 +221,10 @@ net.
 
 | Action | Purpose |
 |---|---|
-| `python_versions` | Read `.python-versions` → JSON array for matrix |
 | `unit_test` | Install deps + run pytest for a single matrix cell |
 | `validate_version_trigger` | Check tag name matches `pyproject.toml` version |
 
-All three live under `.github/actions/` and are implemented in
+Both live under `.github/actions/` and are implemented in
 phase 0 (section 5.1.3).
 
 ## 4.4.4. Release process: `make release`

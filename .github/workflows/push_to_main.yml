@@ -1,0 +1,23 @@
+name: Push to Main
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    uses: ./.github/workflows/_unit_tests.yml
+
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v7
+      - run: make coverage
+      - name: Export coverage to XML
+        env:
+          COVERAGE_FILE: ./reports/.coverage
+        run: uv run coverage xml -o ./reports/coverage.xml
+      - uses: codecov/codecov-action@v5
+        with:
+          files: ./reports/coverage.xml

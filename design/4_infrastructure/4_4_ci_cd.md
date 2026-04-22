@@ -109,6 +109,27 @@ jobs:
             exit 1
           fi
 
+  require-changelog:
+    needs: [validate-branch-name]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Check changelog updated for feat/ and fix/ branches
+        run: |
+          BRANCH="${{ github.head_ref }}"
+          if [[ ! "$BRANCH" =~ ^(feat|fix)/ ]]; then
+            echo "Branch '$BRANCH' is not feat/ or fix/; changelog entry not required."
+            exit 0
+          fi
+          if git diff --name-only "${{ github.event.pull_request.base.sha }}...HEAD" | grep -q '^CHANGELOG\.md$'; then
+            echo "CHANGELOG.md was modified — OK."
+            exit 0
+          fi
+          echo "::error::feat/ and fix/ PRs must update CHANGELOG.md"
+          exit 1
+
   lint:
     needs: [validate-branch-name]
     runs-on: ubuntu-latest
@@ -123,9 +144,16 @@ jobs:
     uses: ./.github/workflows/_unit_tests.yml
 ```
 
-Full test matrix + lint + branch name validation (section 4.2.4). `lint`
-and `test` wait for `validate-branch-name` so a PR with a
-malformed branch name fails fast without running the full matrix.
+Full test matrix + lint + branch-name validation (section 4.2.4) +
+changelog enforcement on `feat/` and `fix/` branches. The check
+catches missing entries at PR time instead of at release time
+(`scripts/release.py` step 8 would otherwise be the only safety
+net, by which point multiple PRs may have already merged without
+entries). `chore/`, `docs/`, `refactor/`, `test/` are exempt
+because their changes are typically not user-visible. All four
+gated jobs (`require-changelog`, `lint`, `test`) wait for
+`validate-branch-name` so a PR with a malformed branch name fails
+fast without running the heavier matrix.
 
 ### 4.4.2.3. push_to_main.yml
 

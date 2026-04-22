@@ -12,7 +12,7 @@ CLI flags on the tree subcommand).
 
 | Setting | Developer | End user | Notes |
 |---|---|---|---|
-| `style` (unicode/ascii) | `TreeConfig(style=...)` | — | R7 — auto-detected from terminal capabilities when unset (section 2.2.2.1); developer overrides the default |
+| `charset` (unicode/ascii) | `TreeConfig(charset=...)` | — | R7 — auto-detected from terminal capabilities when unset (section 2.2.2.1); developer overrides the default |
 | `depth` | `TreeConfig(depth=...)` | `--depth` on tree subcommand | R15, R23 — runtime overrides developer default |
 | `show_hidden` | `TreeConfig(show_hidden=...)` | — | R9 — developer-configurable only |
 | Deprecated display | *(always shown)* | — | R10 — not configurable; deprecated commands are always included with a visual marker |

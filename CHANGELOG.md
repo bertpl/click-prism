@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Internal: tree model (`TreeNode`, `build_tree`, `filter_tree` with error
+  handling and lazy-group support), configuration types (`TreeConfig`,
+  `UNLIMITED`, placeholder theme types) and the `PrismError` exception.
+  Foundations for upcoming `render_tree()` / `show_tree()` public API.
+
 ### Changed
 
 ### Deprecated

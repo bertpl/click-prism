@@ -11,7 +11,7 @@ UNLIMITED: Final[int] = -1
 
 @dataclass
 class TreeConfig:
-    style: Literal["unicode", "ascii"] | None = None
+    charset: Literal["unicode", "ascii"] | None = None
     depth: int | None = None       # None, UNLIMITED (-1), or >= 0
     show_hidden: bool | None = None
     show_params: bool | None = None
@@ -54,7 +54,7 @@ def resolve(self) -> TreeConfig:
             "Use None (inherit), UNLIMITED (-1), or a non-negative integer."
         )
     return TreeConfig(
-        style=self.style if self.style is not None else _default_style(),
+        charset=self.charset if self.charset is not None else _detect_charset(),
         depth=None if self.depth == UNLIMITED else self.depth,
         show_hidden=self.show_hidden if self.show_hidden is not None else False,
         show_params=self.show_params if self.show_params is not None else False,
@@ -67,11 +67,11 @@ After resolution, all fields except `depth` are guaranteed
 non-`None`. `depth` of `None` means unlimited; `UNLIMITED` is
 normalized to `None` during resolution.
 
-`_default_style()` (from `_compat`, section 3.0) returns `"unicode"` or
+`_detect_charset()` (from `_compat`, section 3.0) returns `"unicode"` or
 `"ascii"` based on whether `sys.stdout.encoding` can represent
-Unicode box-drawing characters (section 2.2.2). An explicit `style=`
+Unicode box-drawing characters (section 2.2.2). An explicit `charset=`
 set by the developer is never overridden — the encoding check
-only applies when `style` is left unset.
+only applies when `charset` is left unset.
 
 ### 3.1.1.2. merge()
 
@@ -89,14 +89,14 @@ def merge(self, base: TreeConfig) -> TreeConfig:
 ```
 
 Example — a child group overrides only `depth`, inheriting the
-parent's `style` and `show_hidden`:
+parent's `charset` and `show_hidden`:
 
 ```python
-parent = TreeConfig(style="ascii", show_hidden=True, depth=3)
+parent = TreeConfig(charset="ascii", show_hidden=True, depth=3)
 child  = TreeConfig(depth=1)
 
 child.merge(parent)
-# TreeConfig(style="ascii", depth=1, show_hidden=True, ...)
+# TreeConfig(charset="ascii", depth=1, show_hidden=True, ...)
 ```
 
 The same shape is used at the CLI-flag layer: `TreeConfig(depth=flag_value).merge(group_config)`
@@ -325,10 +325,10 @@ parent's `theme` fills in.
 
 ```python
 parent = TreeConfig(theme=TreeTheme.built_in("dark"))
-child  = TreeConfig(style="ascii")   # theme is None
+child  = TreeConfig(charset="ascii")   # theme is None
 
 child.merge(parent)
-# TreeConfig(style="ascii", theme=<dark TreeTheme>, ...)
+# TreeConfig(charset="ascii", theme=<dark TreeTheme>, ...)
 ```
 
 Once `_resolve_theme()` runs inside `.resolve()`, unset fields
@@ -342,8 +342,8 @@ in `TreeConfig` follows the normal merge chain.
 Setup:
 
 ```python
-# Root group: ascii style, depth 2
-@click.group(cls=PrismGroup, tree_config=TreeConfig(style="ascii", depth=2))
+# Root group: ascii charset, depth 2
+@click.group(cls=PrismGroup, tree_config=TreeConfig(charset="ascii", depth=2))
 def cli(): ...
 
 # Admin subgroup: depth UNLIMITED (lifts root's restriction)
@@ -359,20 +359,20 @@ Execution: `projex admin tree --depth 1`
 **Step 1 — `_effective_config_for(admin, admin_ctx)`**
 
 Walk the context chain. `admin` has `TreeConfig(depth=UNLIMITED)`;
-its parent `cli` has `TreeConfig(style="ascii", depth=2)`.
+its parent `cli` has `TreeConfig(charset="ascii", depth=2)`.
 
 ```python
 result = TreeConfig(depth=UNLIMITED)          # admin's own config
-result = result.merge(TreeConfig(style="ascii", depth=2))  # merge cli config as the fallback
-# → TreeConfig(style="ascii", depth=UNLIMITED)
-#   admin's depth=-1 wins; cli's style="ascii" fills the gap
+result = result.merge(TreeConfig(charset="ascii", depth=2))  # merge cli config as the fallback
+# → TreeConfig(charset="ascii", depth=UNLIMITED)
+#   admin's depth=-1 wins; cli's charset="ascii" fills the gap
 ```
 
 **Step 2 — apply runtime `--depth 1`**
 
 ```python
 effective = TreeConfig(depth=1).merge(result)
-# → TreeConfig(style="ascii", depth=1)
+# → TreeConfig(charset="ascii", depth=1)
 #   flag's depth=1 wins over UNLIMITED
 ```
 
@@ -381,7 +381,7 @@ effective = TreeConfig(depth=1).merge(result)
 ```python
 effective = effective.resolve()
 # → TreeConfig(
-#       style="ascii",      # explicit, passes through
+#       charset="ascii",      # explicit, passes through
 #       depth=1,            # numeric, passes through (not UNLIMITED)
 #       show_hidden=False,  # default
 #       show_params=False,  # default
@@ -390,7 +390,7 @@ effective = effective.resolve()
 #   )
 ```
 
-Final result: ascii style, depth capped at 1, hidden commands
+Final result: ascii charset, depth capped at 1, hidden commands
 excluded, no params shown.
 
 **What changes if the user omits `--depth`?**

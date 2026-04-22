@@ -78,10 +78,10 @@ exports and private names is in section 3.4.3.
   Tests mock this single function rather than patching individual
   checks.
 
-- `_default_style() -> Literal["unicode", "ascii"]` — attempts
+- `_detect_charset() -> Literal["unicode", "ascii"]` — attempts
   `"╰".encode(sys.stdout.encoding or "ascii")`; success returns
   `"unicode"`, `UnicodeEncodeError` or `LookupError` returns
-  `"ascii"`. Used by `TreeConfig.resolve()` when `style=None`
+  `"ascii"`. Used by `TreeConfig.resolve()` when `charset=None`
   (section 2.2.2).
 
 ## 3.0.5. Dependency declarations

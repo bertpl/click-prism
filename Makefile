@@ -52,11 +52,11 @@ coverage:
 	uv sync --group dev
 
 format:
-	uv run ruff format click_prism tests
-	uv run ruff check --fix click_prism tests
+	uv run ruff format click_prism tests scripts
+	uv run ruff check --fix click_prism tests scripts
 
 lint:
-	uv run ruff check click_prism tests
+	uv run ruff check click_prism tests scripts
 
 update-deps:
 	uv lock --upgrade

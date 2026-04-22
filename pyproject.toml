@@ -63,7 +63,11 @@ packages = ["click_prism"]
 [tool.ruff]
 line-length = 120
 target-version = "py310"
-src = ["click_prism", "tests"]
+# `src` declares first-party directories for isort grouping. It does
+# NOT whitelist what ruff lints — that is done by passing explicit
+# paths in the Makefile (`ruff check click_prism tests scripts`) and
+# in the pre-commit hook's `files:` filter.
+src = ["click_prism", "tests", "scripts"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]

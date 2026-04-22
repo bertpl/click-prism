@@ -6,7 +6,7 @@ See your Click CLI from every angle.
 [![PyPI](https://img.shields.io/pypi/v/click-prism.svg)](https://pypi.org/project/click-prism/)
 [![Python](https://img.shields.io/pypi/pyversions/click-prism.svg)](https://pypi.org/project/click-prism/)
 [![Coverage](https://codecov.io/gh/bertpl/click-prism/branch/main/graph/badge.svg)](https://codecov.io/gh/bertpl/click-prism)
-[![License](https://img.shields.io/badge/license-BSD--3--Clause-blue)](LICENSE)
+[![License](https://img.shields.io/badge/license-BSD--3--Clause-blue)](https://github.com/bertpl/click-prism/blob/main/LICENSE)
 
 Tree visualization for [Click](https://click.palletsprojects.com/) command
 hierarchies — and more views to come.
@@ -29,4 +29,4 @@ pip install click-prism[rich]
 
 ## License
 
-[BSD-3-Clause](LICENSE).
+[BSD-3-Clause](https://github.com/bertpl/click-prism/blob/main/LICENSE).

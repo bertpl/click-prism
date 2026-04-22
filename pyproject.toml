@@ -1,6 +1,6 @@
 [project]
 name = "click-prism"
-version = "0.0.0"
+version = "0.0.1"
 description = "Tree visualization for Click command hierarchies."
 readme = "README.md"
 license = "BSD-3-Clause"

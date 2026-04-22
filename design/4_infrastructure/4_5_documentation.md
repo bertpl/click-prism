@@ -81,36 +81,30 @@ build:
   os: ubuntu-24.04
   tools:
     python: "3.10"   # Matches .python-version (section 4.1) — local = minimum supported
-
-python:
-  install:
-    - method: uv
-      command: sync
-      groups:
-        - docs
-
-mkdocs:
-  configuration: mkdocs.yml
+  jobs:
+    install:
+      - asdf plugin add uv
+      - asdf install uv latest
+      - asdf global uv latest
+      - uv sync --group docs
+    build:
+      html:
+        - uv run mkdocs build --clean --site-dir $READTHEDOCS_OUTPUT/html --config-file mkdocs.yml
 ```
 
-Uses RTD's native `uv` integration (`python.install` with
-`method: uv`). Under the hood RTD runs `uv sync --group docs`
-against the checked-out commit, which picks up the committed
-`uv.lock` automatically. Docs dependencies live in
-`[dependency-groups]` (section 4.1), keeping `rich` as the only
-user-visible extra.
+Uses an explicit `jobs.install` + `jobs.build.html` flow rather
+than RTD's higher-level `python.install: method: uv`. The native
+method creates the venv via `uv sync` but the subsequent mkdocs
+step is invoked as `python -m mkdocs build` with the bare
+`python`, which resolves to `/bin/python` on the RTD container
+and fails (does not exist). Calling `uv run mkdocs build`
+explicitly guarantees the venv's interpreter.
+
+Docs dependencies live in `[dependency-groups]` (section 4.1),
+keeping `rich` as the only user-visible extra.
 
 Hosted at `click-prism.readthedocs.io`. Builds automatically on
 push to main and on release tags.
-
-### 4.5.2.1. On `--frozen`
-
-The native method runs `uv sync` without `--frozen`. `uv sync`
-still respects `uv.lock` when it matches `pyproject.toml`, but
-silently re-resolves on drift instead of failing loudly. That
-safety net is redundant here: our primary CI (section 4.4.2) runs
-`uv sync --frozen` on every commit before it reaches RTD, so
-lockfile drift is caught upstream.
 
 ## 4.5.3. Doc structure
 

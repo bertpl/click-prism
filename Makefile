@@ -68,7 +68,7 @@ release:
 
 docs:
 	uv sync --group docs
-	uv run mkdocs build
+	uv run mkdocs build -d ./reports/docs
 
 show-coverage:
 	open ./reports/coverage/index.html

@@ -107,8 +107,10 @@ Best case: **2–3** `0.0.x` releases (first success, one fix, done).
 Worst case: **10–15** `0.0.x` releases while pipeline edge cases
 are shaken out.
 
-All `0.0.x` releases are **yanked** from PyPI before `0.1.0` ships
-(section 5.0 — "Phase 0: throwaway releases").
+`0.0.x` releases that are clean (working infrastructure, clear
+"pre-implementation" framing) stay published. Only yank if a
+release ships broken infrastructure or misleading content. See
+section 5.0.5 for the as-shipped record.
 
 ## 5.1.6. Requirements newly satisfied
 

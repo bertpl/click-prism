@@ -139,20 +139,23 @@ the status of each requirement after each phase:
 | R40 |   | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | R41 |   | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
-## 5.0.5. Phase 0: throwaway releases
+## 5.0.5. Phase 0: shakedown releases
 
-Phase 0 will ship several `0.0.x` releases (best case 2–3, worst
-case 10–15) while the CI/CD pipeline is shaken out. These contain
-no meaningful functionality — they exist only to exercise the full
-release flow end-to-end.
+Phase 0 ships one or more `0.0.x` releases while the CI/CD
+pipeline is shaken out. These contain no meaningful functionality
+— they exist only to exercise the full release flow end-to-end.
 
-**Before 0.1.0 ships:**
+**As shipped:** `0.0.1` (2026-04-22) was the only Phase 0 release.
+Two pipeline bugs (release.py step 11 / step 13) were caught
+during PR review of the release scripts and fixed before the
+release attempt that succeeded; no broken `0.0.x` versions ever
+reached PyPI.
 
-- All `0.0.x` releases are **yanked** from PyPI (the `yank` action
-  hides them from `pip install` without deleting them from history).
-- Git tags for `v0.0.x` remain in the repo as a record of the
-  infrastructure shakedown.
-- `0.1.0` is the first release anyone should install.
+**Yank policy:** Originally all `0.0.x` releases would be yanked
+before `0.1.0` ships. Since `0.0.1` is a clean baseline (verified
+infrastructure, README clearly states "package is pre-implementation"),
+it stays published. If a future `0.0.x` ever ships with broken
+infrastructure or actively misleading content, yank it then.
 
 ## 5.0.6. Sub-sections
 

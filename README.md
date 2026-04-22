@@ -8,8 +8,9 @@ See your Click CLI from every angle.
 [![Coverage](https://codecov.io/gh/bertpl/click-prism/branch/main/graph/badge.svg)](https://codecov.io/gh/bertpl/click-prism)
 [![License](https://img.shields.io/badge/license-BSD--3--Clause-blue)](https://github.com/bertpl/click-prism/blob/main/LICENSE)
 
-Tree visualization for [Click](https://click.palletsprojects.com/) command
-hierarchies — and more views to come.
+Tree visualization (plain or [Rich](https://rich.readthedocs.io/)-styled)
+and JSON output for [Click](https://click.palletsprojects.com/) command
+hierarchies.
 
 ## Installation
 
@@ -17,7 +18,7 @@ hierarchies — and more views to come.
 pip install click-prism
 ```
 
-For Rich-rendered output:
+For [Rich](https://rich.readthedocs.io/)-rendered output:
 
 ```bash
 pip install click-prism[rich]

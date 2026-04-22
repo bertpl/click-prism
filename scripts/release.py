@@ -39,7 +39,16 @@ SEMVER_RE = re.compile(r"^\d+\.\d+\.\d+$")
 
 
 def run(cmd: list[str], **kw) -> str:
-    return subprocess.run(cmd, check=True, capture_output=True, text=True, **kw).stdout
+    result = subprocess.run(cmd, capture_output=True, text=True, **kw)
+    if result.returncode != 0:
+        # Surface command + stderr so the failure is self-diagnosing.
+        sys.stderr.write(f"\n$ {' '.join(cmd)}\n")
+        if result.stdout:
+            sys.stderr.write(result.stdout)
+        if result.stderr:
+            sys.stderr.write(result.stderr)
+        raise subprocess.CalledProcessError(result.returncode, cmd)
+    return result.stdout
 
 
 def step(n: int, msg: str) -> None:
@@ -214,10 +223,12 @@ def step_11_generate_coverage_badge() -> None:
     step(11, "generate coverage badge from ./reports/.coverage")
     BADGES_DIR.mkdir(parents=True, exist_ok=True)
     out = BADGES_DIR / "coverage.svg"
-    run(
-        ["uv", "run", "genbadge", "coverage", "-i", str(COVERAGE_FILE), "-o", str(out)],
-        env={**__import__("os").environ, "COVERAGE_FILE": str(COVERAGE_FILE)},
-    )
+    # genbadge reads Cobertura-style coverage.xml, not the binary .coverage
+    # database. Materialize the XML first from the same coverage data.
+    coverage_xml = COVERAGE_FILE.parent / "coverage.xml"
+    env = {**__import__("os").environ, "COVERAGE_FILE": str(COVERAGE_FILE)}
+    run(["uv", "run", "coverage", "xml", "-o", str(coverage_xml)], env=env)
+    run(["uv", "run", "genbadge", "coverage", "-i", str(coverage_xml), "-o", str(out)])
 
 
 def step_12_freeze_badges(version: str) -> None:

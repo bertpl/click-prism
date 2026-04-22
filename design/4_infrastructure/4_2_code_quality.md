@@ -63,10 +63,14 @@ commit loop must feel instant.
 
 ```yaml
 # .pre-commit-config.yaml
-exclude: ^design/   # Design docs and example scripts are outside
-                   # the linted scope (whitelist enforced per-hook
-                   # below for ruff; this top-level exclude covers
-                   # the remote pre-commit-hooks bundle).
+exclude: ^(design|badges)/   # Design docs/example scripts and
+                   # generated badge SVGs are outside the linted
+                   # scope. design/ is whitelisted per-hook below
+                   # for ruff; badges/ contains release.py-generated
+                   # SVGs that don't end with a newline (genbadge
+                   # output) — without this exclude the EOF-fixer
+                   # hook modifies them and aborts the release
+                   # commit.
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks

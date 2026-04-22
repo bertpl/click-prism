@@ -16,12 +16,12 @@ repos:
         entry: uv run ruff format
         language: system
         types: [python]
-        files: ^(click_prism|tests)/
+        files: ^(click_prism|tests|scripts)/
         pass_filenames: true
       - id: ruff
         name: ruff check
         entry: uv run ruff check
         language: system
         types: [python]
-        files: ^(click_prism|tests)/
+        files: ^(click_prism|tests|scripts)/
         pass_filenames: true

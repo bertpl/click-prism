@@ -48,7 +48,9 @@ must all be completed before the first `0.0.1` push.
 Create all files and directories defined in section 4.1:
 
 - `click_prism/` with `__init__.py`, `py.typed`, and a stub
-  `__version__` attribute. No functional code yet.
+  `__version__` attribute (read from `importlib.metadata` so the
+  source of truth stays `pyproject.toml`'s `[project] version`).
+  No functional code yet.
 - `tests/` with one trivial test (e.g.,
   `def test_import(): import click_prism`).
 - `scripts/release.py` fully implemented per section 4.4.4. Must work

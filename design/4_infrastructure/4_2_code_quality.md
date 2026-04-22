@@ -13,11 +13,12 @@ target-version = "py310"   # Minimum supported Python syntax. Matches
                            # requires-python in pyproject.toml and
                            # .python-version — see section 4.1 for the
                            # "local = minimum supported" rationale.
-src = ["click_prism", "tests"]  # Whitelist: Makefile and pre-commit
-                                # hooks target these directories
-                                # explicitly. Anything else (notably
-                                # design/_examples mock scripts) is
-                                # outside the linted scope.
+src = ["click_prism", "tests", "scripts"]  # First-party paths for
+                                # isort grouping ONLY. Whitelisting
+                                # of what ruff lints is done by
+                                # passing explicit paths in the
+                                # Makefile and in the pre-commit
+                                # hook's `files:` filter.
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
@@ -83,14 +84,14 @@ repos:
         entry: uv run ruff format
         language: system
         types: [python]
-        files: ^(click_prism|tests)/
+        files: ^(click_prism|tests|scripts)/
         pass_filenames: true
       - id: ruff
         name: ruff check
         entry: uv run ruff check
         language: system
         types: [python]
-        files: ^(click_prism|tests)/
+        files: ^(click_prism|tests|scripts)/
         pass_filenames: true
 ```
 

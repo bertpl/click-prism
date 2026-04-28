@@ -41,13 +41,13 @@ structure.
   `RichRenderer` inherit from the same ABC; phase 7 factors out
   the `select_renderer()` dispatcher that up to that point lives
   inline in `_show.py`.
-- Unicode style with rounded arc corners (default)
-- ASCII fallback style
-- Auto-style default: when `style=None`, `_default_style()` (from
+- Unicode charset with rounded arc corners (default)
+- ASCII fallback charset
+- Auto-charset default: when `charset=None`, `_detect_charset()` (from
   `_compat`) selects `"unicode"` or `"ascii"` based on whether
   `sys.stdout.encoding` can represent box-drawing characters; an
-  explicit `style="unicode"` is never overridden (section 2.2.2.1)
-- `_compat.py` is created in this phase with `_default_style()`
+  explicit `charset="unicode"` is never overridden (section 2.2.2.1)
+- `_compat.py` is created in this phase with `_detect_charset()`
   (section 3.0.4); `_should_use_rich()` is added in phase 7 (section 5.8)
 - Root label uses `ctx.command_path` (section 3.3.0.2.5) — shows the full
   command path for subtrees; for `show_tree()`'s synthetic context
@@ -64,7 +64,7 @@ structure.
 
 - `TreeConfig` dataclass with all fields defined per section 3.1.
   Field states:
-    - `style`, `depth` — **Active**.
+    - `charset`, `depth` — **Active**.
     - `show_hidden` — **Partial (→ phase 6: `[hidden]` visual
       marker)**. Filtering via `filter_tree()` is Active in this
       phase (visual paths exclude by default; standalone paths
@@ -176,7 +176,7 @@ the repo at 100% coverage.
 
 1. **Tree model + TreeConfig** — `_model.py` (`TreeNode`,
    `build_tree` with error handling), `_compat.py`
-   (`_default_style()`), `_config.py` (`TreeConfig` dataclass with
+   (`_detect_charset()`), `_config.py` (`TreeConfig` dataclass with
    all fields defined + `.resolve()` + `.merge()`), plus unit tests
    for traversal, error nodes, lazy groups, config resolution, and
    merge semantics (plain assertions — no snapshot infra needed
@@ -200,8 +200,8 @@ the repo at 100% coverage.
   `get_command` raising, circular references
 - Snapshot tests (section 4.3.6, `assert_rich_snapshot` not yet needed —
   plain text only) for:
-    - Unicode style
-    - ASCII style
+    - Unicode charset
+    - ASCII charset
     - Columnar alignment with varying tree widths
     - Error nodes
     - Deep nesting

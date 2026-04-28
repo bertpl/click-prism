@@ -11,7 +11,7 @@ gracefully when `rich` is absent.
 
 - `_should_use_rich() -> bool` (section 3.0.4) — newly introduced
   **Active**. Added to `_compat.py` alongside phase 1's
-  `_default_style()`. Single import attempt, result cached for
+  `_detect_charset()`. Single import attempt, result cached for
   the process lifetime; checks both `rich` importability and TTY
   status.
 - Used by renderer selection, tree-as-help rendering, and

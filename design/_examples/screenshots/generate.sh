@@ -33,10 +33,10 @@
 #
 #   Move the generated files to the plan document screenshot folders:
 #
-#     0.2 screenshots → design/0_analysis/2_status_quo/screenshots/
+#     1.2 screenshots → design/1_analysis/2_status_quo/screenshots/
 #
 #   Example (move everything):
-#     mv output/{click,cloup,rich}_*.{webp,txt} ../../0_analysis/2_status_quo/screenshots/
+#     mv output/{click,cloup,rich}_*.{webp,txt} ../../1_analysis/2_status_quo/screenshots/
 #
 
 set -euo pipefail

@@ -45,7 +45,7 @@ ASCII = CharSet(
 )
 ```
 
-Selected by `TreeConfig.style` (section 3.1).
+Selected by `TreeConfig.charset` (section 3.1).
 
 ## 3.3.1.3. Tree prefix construction
 

@@ -28,7 +28,7 @@
 #
 #   Move the generated files to the plan document mock folder:
 #
-#     mv output/mock_*.{webp,txt} ../../1_vision/mocks/
+#     mv output/mock_*.{webp,txt} ../../2_vision/mocks/
 #
 
 set -euo pipefail
